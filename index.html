@@ -108,14 +108,8 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURE THIS: Your API endpoint URL
-        // ============================================
-        const API_ENDPOINT = '/api/results';  // Change this to your API server URL
-        // Examples:
-        // const API_ENDPOINT = 'http://localhost:3000/api/results';
-        // const API_ENDPOINT = 'https://your-api.com/api/results';
-        // ============================================
+        // API endpoint - automatically uses current domain
+        const API_ENDPOINT = '/api/results';
 
         const refreshBtn = document.getElementById('refreshBtn');
         const latestResult = document.getElementById('latestResult');
@@ -189,3 +183,4 @@
     </script>
 </body>
 </html>
+
