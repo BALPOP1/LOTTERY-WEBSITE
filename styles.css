@@ -234,5 +234,34 @@ footer a {
     .results-grid {
         grid-template-columns: 1fr;
     }
+
+    /* Mobile layout: 3 balls on top, 2 balls on bottom (centered) */
+    .numbers {
+        display: grid;
+        grid-template-columns: repeat(3, 50px);
+        gap: 12px;
+        justify-content: center;
+        max-width: calc(3 * 50px + 2 * 12px);
+        margin: 0 auto;
+    }
+
+    /* First 3 balls: positions 1, 2, 3 (first row) */
+    .number-ball:nth-child(1) {
+        grid-column: 1;
+    }
+    .number-ball:nth-child(2) {
+        grid-column: 2;
+    }
+    .number-ball:nth-child(3) {
+        grid-column: 3;
+    }
+
+    /* 4th and 5th balls: centered on second row (columns 2 and 3) */
+    .number-ball:nth-child(4) {
+        grid-column: 2;
+    }
+    .number-ball:nth-child(5) {
+        grid-column: 3;
+    }
 }
 
