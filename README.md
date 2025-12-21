@@ -1,107 +1,159 @@
-# Quina Auto Getter
+# 🎰 Quina Lottery Results
 
-A simple static HTML page + API server for displaying Quina lottery results from your PostgreSQL database.
+A static website that displays winning numbers from Brazil's Quina lottery, automatically fetched from megasena.com and hosted on GitHub Pages.
 
-## Quick Start (Local)
+![Quina Results](https://img.shields.io/badge/Lottery-Quina-purple)
+![Auto Update](https://img.shields.io/badge/Updates-Every%203%20Hours-green)
+![GitHub Pages](https://img.shields.io/badge/Hosted-GitHub%20Pages-blue)
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## ✨ Features
 
-2. **Set up PostgreSQL database:**
-   - Install PostgreSQL locally, or use Railway/other cloud provider
-   - Set `DATABASE_URL` environment variable:
-     ```bash
-     export DATABASE_URL="postgresql://user:password@localhost:5432/quina_db"
-     ```
+- 🔄 **Auto-updating** - Results fetched automatically every 3 hours via GitHub Actions
+- 📱 **Responsive design** - Works on desktop and mobile
+- ⚡ **Fast loading** - Static site with no server required
+- 🆓 **Free hosting** - Runs entirely on GitHub (Pages + Actions)
+- 📊 **Historical data** - Stores last 30 lottery results
 
-3. **Create database table:**
-   ```bash
-   node create-table.js
-   ```
-   Or run `create-table.sql` in your PostgreSQL client
+## 🚀 Quick Setup
 
-4. **Start server:**
-   ```bash
-   npm start
-   ```
+### 1. Fork or Clone this Repository
 
-5. **Open:** http://localhost:3000
-
-## Deploy to Railway
-
-### Quick Railway Deploy:
-
-1. **Push code to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git push
-   ```
-
-2. **Deploy on Railway:**
-   - Go to [railway.app](https://railway.app)
-   - Click "New Project" → "Deploy from GitHub repo"
-   - Select your repository
-
-3. **Add PostgreSQL Database:**
-   - In Railway dashboard, click "New" → "Database" → "Add PostgreSQL"
-   - Railway automatically provides `DATABASE_URL` environment variable
-
-4. **Create table:**
-   - Go to your PostgreSQL database in Railway
-   - Click "Query" tab
-   - Run the SQL from `create-table.sql`
-
-5. **Done!** Your site will be live at `https://your-app.up.railway.app`
-
-## Database Structure
-
-```sql
-CREATE TABLE quina_results (
-    id SERIAL PRIMARY KEY,
-    draw_number INTEGER UNIQUE NOT NULL,
-    date TEXT NOT NULL,
-    numbers TEXT NOT NULL,  -- JSON array: "[23, 41, 46, 58, 66]"
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+```bash
+git clone https://github.com/YOUR-USERNAME/LOTTERY-WEBSITE.git
+cd LOTTERY-WEBSITE
 ```
 
-## API Endpoints
+### 2. Push to GitHub
 
-- `GET /api/results` - Returns JSON with latest and previous results
-- `GET /health` - Health check endpoint
-
-Response format:
-```json
-{
-  "latest": {
-    "drawNumber": "6907",
-    "date": "19th December 2025",
-    "numbers": [23, 41, 46, 58, 66]
-  },
-  "previous": [...],
-  "lastUpdated": "2025-12-19T10:30:00.000Z"
-}
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/LOTTERY-WEBSITE.git
+git push -u origin main
 ```
 
-## Files
+### 3. Enable GitHub Pages
 
-- `index.html` - Static HTML page
-- `api-server.js` - Express API server (reads from PostgreSQL)
-- `create-table.js` - Helper script to create database table
-- `create-table.sql` - SQL script to create table
+1. Go to your repository on GitHub
+2. Click **Settings** → **Pages**
+3. Under "Source", select **Deploy from a branch**
+4. Choose **main** branch and **/ (root)** folder
+5. Click **Save**
 
-## Environment Variables
+Your site will be live at: `https://YOUR-USERNAME.github.io/LOTTERY-WEBSITE/`
 
-- `DATABASE_URL` - PostgreSQL connection string (required)
-- `PORT` - Server port (default: 3000, Railway sets this automatically)
+### 4. Enable GitHub Actions
 
-## Notes
+The workflow should run automatically. To trigger manually:
 
-- Your scraper program should insert data into the `quina_results` table
-- Use `draw_number` (not `drawNumber`) as the column name
-- The HTML page auto-refreshes every 5 minutes
-- Railway automatically provides `DATABASE_URL` when you add PostgreSQL database
+1. Go to **Actions** tab
+2. Click **Fetch Quina Results**
+3. Click **Run workflow** → **Run workflow**
+
+## 📁 Project Structure
+
+```
+LOTTERY-WEBSITE/
+├── index.html              # Main HTML page
+├── styles.css              # Styling
+├── script.js               # Frontend JavaScript
+├── data/
+│   └── results.json        # Lottery results (auto-updated)
+├── scripts/
+│   └── fetch_quina.py      # Python scraper
+├── requirements.txt        # Python dependencies
+├── .github/
+│   └── workflows/
+│       └── fetch-results.yml  # GitHub Actions workflow
+└── README.md
+```
+
+## 🔧 How It Works
+
+1. **GitHub Actions** runs the Python scraper every 3 hours
+2. The scraper fetches results from megasena.com
+3. New results are saved to `data/results.json`
+4. Changes are automatically committed to the repository
+5. **GitHub Pages** serves the static website
+6. The frontend reads from `results.json` and displays the numbers
+
+## 🛠️ Local Development
+
+### Run the website locally
+
+Simply open `index.html` in a web browser, or use a local server:
+
+```bash
+# Python
+python -m http.server 8000
+
+# Node.js
+npx serve
+```
+
+### Run the scraper manually
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run scraper
+python scripts/fetch_quina.py
+```
+
+## 📝 Configuration
+
+### Change fetch frequency
+
+Edit `.github/workflows/fetch-results.yml`:
+
+```yaml
+schedule:
+  # Every hour
+  - cron: '0 * * * *'
+  
+  # Every 6 hours
+  - cron: '0 */6 * * *'
+  
+  # Daily at midnight UTC
+  - cron: '0 0 * * *'
+```
+
+### Keep more/fewer results
+
+Edit `scripts/fetch_quina.py`:
+
+```python
+MAX_RESULTS = 30  # Change this number
+```
+
+## ⚠️ Troubleshooting
+
+### Results not updating
+
+1. Check **Actions** tab for failed workflows
+2. Ensure GitHub Actions is enabled in repository settings
+3. Try running the workflow manually
+
+### Website not loading
+
+1. Verify GitHub Pages is enabled
+2. Check the Pages URL is correct
+3. Wait a few minutes after enabling Pages
+
+### Scraper errors
+
+The scraper may fail if megasena.com changes their HTML structure. Check the error logs in GitHub Actions and update the parsing logic in `fetch_quina.py` if needed.
+
+## 📜 License
+
+MIT License - feel free to use and modify!
+
+## 🙏 Credits
+
+- Data source: [megasena.com](https://megasena.com/en/quina/results)
+- Hosting: [GitHub Pages](https://pages.github.com/)
+- Automation: [GitHub Actions](https://github.com/features/actions)
+
